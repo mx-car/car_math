@@ -1,0 +1,24 @@
+{
+    "name": "car_time",
+    "version": "1.0.0",
+    "description": "Lib to handle timestamps and cycles",
+    "keywords": "time, timestamps, cycles",
+    "repository":
+    {
+      "type": "git",
+      "url": "https://github.com/mx-car/car_time.git"
+    },
+    "authors":
+    [
+      {
+        "name": "Markus Bader",
+        "email": "markus.bader@mx-robotics.com",
+        "url": "https://www.mx-robotics.com",
+        "maintainer": true
+      }
+    ],
+    "license": "BSD",
+    "homepage": "https://github.com/mx-car/car_time",
+    "frameworks": "*",
+    "platforms": "*"
+  }
