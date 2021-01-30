@@ -1,13 +1,17 @@
 clf
-m = csvread ('motor03.csv')
+m = csvread ('motor00.csv', 'headerlines', 1);
 n = size(m)(1);
 t = m(:,1);
+encoder_motor = m(:,2);
+encoder_phase = m(:,3);
 hold off;
 
 %plot(m(:,1), m(:,2),";Rotor ASxxxx;",m(:,1), m(:,3),";Theta ASxxxx;", m(:,1), m(:,4),";Theta SVM;");
 %hold on;
+encoder_motor_max = 4096;
+encoder_motor_phase_max = encoder_motor_max/11;
 
-a = deg2rad(m(:,3));
+a = encoder_motor/encoder_motor_max*pi*2;
 s = cos(a);
 plot(t,s, 'LineWidth', 1, 'b','DisplayName','Input');
 hold on
