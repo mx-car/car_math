@@ -13,6 +13,12 @@ namespace car
 {
     namespace math
     {
+
+        enum Direction{
+            CLOCKWISE,
+            COUNTERCLOCKWISE
+        };
+        
         /** class to manage discretized angles
          * @param MAX maximum angle discretization e.g. 360
          * @param RESOLUTION lookup table resolution to perform fast cosinus operations  
@@ -43,6 +49,12 @@ namespace car
                 normalize();
             }
             /**
+             * max value for a full rotation
+            **/
+            int16_t max(){
+                return MAX;
+            }
+            /**
              * Init lookup tables
              * it will alocated a lookup table to perform fast cosinus oprations
             **/
@@ -65,6 +77,13 @@ namespace car
                 return value_;
             }
             /**
+             * @return discretized angle value
+            **/
+            int16_t &operator()()
+            {
+                return value_;
+            }
+            /**
              * normalizes the discretized angle between 0 and MAX-1
              * @return this
             **/
@@ -81,9 +100,19 @@ namespace car
              * @param rad value to set in rad
              * @return this
             **/
-            Angle &set_rad(float rad)
+            Angle &setRad(float rad)
             {
                 value_ = rad2val(rad);
+                return *this;
+            }
+            /**
+             * set angle from degrees
+             * @param deg value to set in rad
+             * @return this
+            **/
+            Angle &setDeg(float deg)
+            {
+                value_ = deg2val(deg);
                 return *this;
             }
             /**
@@ -91,7 +120,7 @@ namespace car
              * @param val discretized angle between 0 and MAX-1
              * @return this
             **/
-            Angle &set_val(float val)
+            Angle &set(float val)
             {
                 value_ = val;
                 return *this;
@@ -147,6 +176,15 @@ namespace car
             static int16_t rad2val(float rad)
             {
                 return round(rad * (float)MAX / M_TWOPI);
+            }
+            /**
+             * converts degree value to discretized angle value
+             * @param deg degree 0 - 359
+             * @return discretized angle between 0 and MAX-1
+            **/
+            static int16_t deg2val(float deg)
+            {
+                return round(deg * (float)MAX / 360.);
             }
             /**
              * converts norm value to discretized angle value
