@@ -3,8 +3,8 @@
  * @license Simplified BSD License
  */
 
-#ifndef CAR_MATH_MEASURMENT_H
-#define CAR_MATH_MEASURMENT_H
+#ifndef CAR_MATH_VALUE_H
+#define CAR_MATH_VALUE_H
 
 #include <Arduino.h>
 
@@ -13,41 +13,44 @@ namespace car
     namespace math
     {
         template <typename T>
-        class Measurement
+        class Value
         {
         public:
             uint32_t stamp; /// microsec
             T value;
-            Measurement()
+            Value()
             : stamp(0)
             , value() {}
-            Measurement(const Measurement &m)
+            Value(const T &value)
+            : stamp(0)
+            , value(value) {}
+            Value(const Value &m)
             : stamp(m.stamp)
             , value(m.value) {}
-            Measurement(uint32_t stamp, const T &value)
+            Value(uint32_t stamp, const T &value)
             : stamp(stamp)
             , value(value) {}
             float stamp_as_sec(){
                 return stamp / 1000. / 1000.;
             }
-            Measurement &operator+=(const Measurement &rhs)
+            Value &operator+=(const Value &rhs)
             {
                 stamp += rhs.stamp;
                 value += rhs.value;
                 return *this;
             }
-            Measurement &operator-=(const Measurement &rhs)
+            Value &operator-=(const Value &rhs)
             {
                 stamp -= rhs.stamp;
                 value -= rhs.value;
                 return *this;
             }
-            friend Measurement operator+(Measurement lhs, const Measurement &rhs)
+            friend Value operator+(Value lhs, const Value &rhs)
             {
                 lhs += rhs;
                 return lhs;
             }
-            friend Measurement operator-(Measurement lhs, const Measurement &rhs)
+            friend Value operator-(Value lhs, const Value &rhs)
             {
                 lhs -= rhs;
                 return lhs;
@@ -55,4 +58,4 @@ namespace car
         };
     }; // namespace math
 };     // namespace car
-#endif //CAR_MATH_MEASURMENT_H
+#endif //CAR_MATH_VALUE_H
