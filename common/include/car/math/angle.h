@@ -9,6 +9,8 @@
 #include <Arduino.h>
 #include <math.h>
 
+#define RANGE_N10_TO_P10 {-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+
 namespace car
 {
     namespace math
@@ -18,7 +20,7 @@ namespace car
             CLOCKWISE,
             COUNTERCLOCKWISE
         };
-        
+
         /** class to manage discretized angles
          * @param MAX maximum angle discretization e.g. 360
          * @param RESOLUTION lookup table resolution to perform fast cosinus operations  
@@ -42,16 +44,20 @@ namespace car
             Angle(const Angle &o) : value_(o.value_) {}
             /**
              * constructor
-             * @param val value will be normalized
             **/
-            Angle(const int16_t &val) : value_(val)
+            Angle(const int16_t &val) : value_(val) {}
+            /**
+             * constructor
+             * @param normalize_angle on true normalize will be called
+            **/
+            Angle(const int16_t &val, bool normalize_angle) : value_(val)
             {
-                normalize();
+                if(normalize_angle) normalize();
             }
             /**
              * max value for a full rotation
             **/
-            int16_t max(){
+            static int16_t max(){
                 return MAX;
             }
             /**
@@ -96,8 +102,22 @@ namespace car
                 return *this;
             }
             /**
+             * denormalizes angle betwen angle between -MAX/2 and MAX/2-1
+             * @return angle  between -MAX/2 and MAX/2-1
+            **/
+            int16_t denormalize()
+            {
+                int16_t v = value_;
+                while (v < -MAX/2)
+                    v += MAX;
+                while (v >= MAX/2)
+                    v -= MAX;
+                return v;
+            }
+            /**
              * set angle from radians
              * @param rad value to set in rad
+             * @post normalize the value with Angle::normalize() if needed
              * @return this
             **/
             Angle &setRad(float rad)
@@ -108,6 +128,7 @@ namespace car
             /**
              * set angle from degrees
              * @param deg value to set in rad
+             * @post normalize the value with Angle::normalize() if needed
              * @return this
             **/
             Angle &setDeg(float deg)
@@ -116,8 +137,9 @@ namespace car
                 return *this;
             }
             /**
-             * set angle from discretized angle between 0 and MAX-1
-             * @param val discretized angle between 0 and MAX-1
+             * set angle from discretized angle values
+             * @param val discretized angle values
+             * @post normalize the value with Angle::normalize() if needed
              * @return this
             **/
             Angle &set(float val)
@@ -127,12 +149,12 @@ namespace car
             }
             /**
              * returns cosinus
-             * @pre init
+             * @pre Angle::init() and the values must be normalized 
              * @return cosinus
             **/
             float get_cos() const
             {
-                return Angle::cos_lockup[value_ / RESOLUTION];
+                return Angle::cos_lockup[(value_ % MAX) / RESOLUTION];
             }
             /**
              * angle in rad
@@ -195,46 +217,102 @@ namespace car
             {
                 return round(rad * (float)MAX);
             }
+            /**
+             * Add
+             * @param rhs 
+             * @post normalize the value with Angle::normalize() if needed
+            **/
             Angle &operator+=(int16_t rhs)
             {
                 value_ += rhs;
-                return normalize();
+                return *this;
             }
+            /**
+             * substract
+             * @param rhs 
+             * @post normalize the value with Angle::normalize() if needed
+            **/
             Angle &operator-=(int16_t rhs)
             {
                 value_ -= rhs;
-                return normalize();
+                return *this;
             }
-
+            /**
+             * Add
+             * @param rhs 
+             * @post normalize the value with Angle::normalize() if needed
+            **/
             Angle &operator+=(const Angle &rhs)
             {
                 value_ += rhs.value_;
-                return normalize();
+                return *this;
             }
+            /**
+             * substract
+             * @param rhs 
+             * @post normalize the value with Angle::normalize() if needed
+            **/
             Angle &operator-=(const Angle &rhs)
             {
                 value_ -= rhs.value_;
-                return normalize();
+                return *this;
             }
+            /**
+             * Add
+             * @param lhs 
+             * @param rhs 
+             * @post normalize the value with Angle::normalize() if needed
+            **/
             friend Angle operator+(Angle lhs, int16_t rhs)
             {
                 lhs += rhs;
                 return lhs;
             }
+            /**
+             * substract
+             * @param lhs 
+             * @param rhs 
+             * @post normalize the value with Angle::normalize() if needed
+            **/
             friend Angle operator-(Angle lhs, int16_t rhs)
             {
                 lhs -= rhs;
                 return lhs;
             }
-            friend Angle operator+(Angle lhs, const Angle &rhs)
+            /**
+             * Add
+             * @param lhs 
+             * @param rhs 
+             * @post normalize the value with Angle::normalize() if needed
+            **/
+            friend Angle operator+(Angle lhs, const Angle  &rhs)
             {
                 lhs += rhs;
                 return lhs;
             }
-            friend Angle operator-(Angle lhs, const Angle &rhs)
+            /**
+             * substract
+             * @param lhs 
+             * @param rhs 
+             * @post normalize the value with Angle::normalize() if needed
+            **/
+            friend Angle operator-(Angle lhs, const Angle  &rhs)
             {
                 lhs -= rhs;
                 return lhs;
+            }
+            /**
+             * Shortest distance (angular) between two angles in degrees
+             * It will be in range [0, 180].
+             * @param alpha
+             * @param beta
+             * @return distance
+             */
+            static Angle difference(const Angle &alpha, const Angle& beta) {
+                int16_t diff = beta.value_ - alpha.value_;
+                while (diff < -MAX/2) diff += MAX;
+                while (diff > MAX/2) diff -= MAX;
+                return Angle(diff);
             }
         };
         typedef Angle<360, 2> AngleDeg;
