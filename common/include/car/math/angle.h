@@ -17,8 +17,8 @@ namespace car
     {
 
         enum Direction{
-            CLOCKWISE,
-            COUNTERCLOCKWISE
+            CLOCKWISE        = 0,
+            COUNTERCLOCKWISE = 1
         };
 
         /** class to manage discretized angles
