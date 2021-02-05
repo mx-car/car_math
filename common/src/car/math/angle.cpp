@@ -1,6 +1,5 @@
 /**
  * @author Markus Bader <markus.bader@mx-robotics.com>
- * @license Simplified BSD License
  */
 
 #include <Arduino.h>

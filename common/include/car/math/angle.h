@@ -1,6 +1,5 @@
 /**
  * @author Markus Bader <markus.bader@mx-robotics.com>
- * @license Simplified BSD License
  */
 
 #ifndef CAR_MATH_ANGLE_H
@@ -315,7 +314,7 @@ namespace car
                 return Angle(diff);
             }
         };
-        typedef Angle<360, 2> AngleDeg;
+        typedef Angle<360, 1> AngleDeg;
         typedef Angle<0x3FFF, 0x3F> Angle14Bit;
     }; // namespace math
 };     // namespace car
