@@ -42,16 +42,16 @@ namespace car
             float wheel_axle_displacement; /// distance d between frond and back wheel axle
         };
 
-        class AckermannRearWheelDrive
+        class AckermannState
         {
         public:
             static const int LEFT = 0;
             static const int RIGHT = 1;
-            AckermannRearWheelDrive();
-            AckermannRearWheelDrive(const AckermannRearWheelDrive &o);
-            AckermannRearWheelDrive(const std::array<float, 3> &v);
-            AckermannRearWheelDrive(const std::array<float, 2> &v, float streering);
-            AckermannRearWheelDrive(float v_left, float v_right, float streering);
+            AckermannState();
+            AckermannState(const AckermannState &o);
+            AckermannState(const std::array<float, 3> &v);
+            AckermannState(const std::array<float, 2> &v, float streering);
+            AckermannState(float v_left, float v_right, float streering);
             void set(const Twist &twist, const AckermannConfig &config);
             std::array<float, 2> v;
             float steering;

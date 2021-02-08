@@ -15,18 +15,18 @@ AckermannConfig::AckermannConfig(const AckermannConfig &o)
 AckermannConfig::AckermannConfig(float wheel_diameter, float wheel_displacement, float wheel_axle_displacement) 
 : wheel_diameter(wheel_diameter), wheel_displacement(wheel_displacement), wheel_axle_displacement(wheel_axle_displacement) {}
 
-AckermannRearWheelDrive::AckermannRearWheelDrive()
+AckermannState::AckermannState()
     : v({0, 0}), steering(0) {}
-AckermannRearWheelDrive::AckermannRearWheelDrive(const AckermannRearWheelDrive &o)
+AckermannState::AckermannState(const AckermannState &o)
     : v(o.v), steering(o.steering) {}
-AckermannRearWheelDrive::AckermannRearWheelDrive(const std::array<float, 3> &v)
+AckermannState::AckermannState(const std::array<float, 3> &v)
     : v({v[0], v[1]}), steering(v[2]) {}
-AckermannRearWheelDrive::AckermannRearWheelDrive(const std::array<float, 2> &v, float steering)
+AckermannState::AckermannState(const std::array<float, 2> &v, float steering)
     : v(v), steering(steering) {}
-AckermannRearWheelDrive::AckermannRearWheelDrive(float v_left, float v_right, float steering)
+AckermannState::AckermannState(float v_left, float v_right, float steering)
     : v({v_left, v_right}), steering(steering) {}
 
-void AckermannRearWheelDrive::set(const Twist &twist, const AckermannConfig &config)
+void AckermannState::set(const Twist &twist, const AckermannConfig &config)
 {
     if (twist.w == 0)
     {
