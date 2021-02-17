@@ -5,8 +5,6 @@
 #ifndef CAR_MATH_VALUE_H
 #define CAR_MATH_VALUE_H
 
-#include <Arduino.h>
-
 namespace car
 {
     namespace math
@@ -31,6 +29,14 @@ namespace car
             , value(value) {}
             float stamp_as_sec(){
                 return stamp / 1000. / 1000.;
+            }
+            T &operator()()
+            {
+                return value;
+            }
+            const T &operator()() const
+            {
+                return value;
             }
             Value &operator+=(const Value &rhs)
             {

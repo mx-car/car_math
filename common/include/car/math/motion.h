@@ -6,6 +6,7 @@
 #define CAR_MATH_MOTION_H
 
 #include <array>
+#include <car/math/value.h>
 
 namespace car
 {
@@ -30,6 +31,7 @@ namespace car
              **/
             float radius_inv() const;
         };
+        typedef Value<Twist> TwistStamped;
 
         class AckermannConfig
         {
@@ -41,6 +43,7 @@ namespace car
             float wheel_displacement;      /// distance l between left and right wheel
             float wheel_axle_displacement; /// distance d between frond and back wheel axle
         };
+        typedef Value<AckermannConfig> AckermannConfigStamped;
 
         class AckermannState
         {
@@ -49,14 +52,19 @@ namespace car
             static const int RIGHT = 1;
             AckermannState();
             AckermannState(const AckermannState &o);
-            AckermannState(const std::array<float, 3> &v);
-            AckermannState(const std::array<float, 2> &v, float streering);
-            AckermannState(float v_left, float v_right, float streering);
+            AckermannState(const std::array<float, 3> &v, bool coubled = true);
+            AckermannState(const std::array<float, 2> &v, float streering, bool coubled = true);
+            AckermannState(float v_left, float v_right, float streering, bool coubled = true);
+
+            void set(std::array<float, 2> v, float steering, bool coubled);
+            void set(const Twist &twist, const AckermannConfig &config, bool coubled);
             void set(const Twist &twist, const AckermannConfig &config);
+            void couble(bool on);
+            std::array<bool, 2> coubled;
             std::array<float, 2> v;
             float steering;
         };
-
+        typedef Value<AckermannState> AckermannStateStamped;
 
     } // namespace math
 } // namespace car
