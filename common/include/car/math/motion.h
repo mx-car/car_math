@@ -50,19 +50,23 @@ namespace car
         public:
             static const int LEFT = 0;
             static const int RIGHT = 1;
+            static const int MODE_NA = 0;
+            static const int MODE_PWM = 1;
+            static const int MODE_VELOCITY = 2;
             AckermannState();
             AckermannState(const AckermannState &o);
-            AckermannState(const std::array<float, 3> &v, bool coubled = true);
-            AckermannState(const std::array<float, 2> &v, float streering, bool coubled = true);
-            AckermannState(float v_left, float v_right, float streering, bool coubled = true);
+            AckermannState(const std::array<float, 3> &v, uint16_t mode, bool coubled = true);
+            AckermannState(const std::array<float, 2> &v, float streering, uint16_t mode, bool coubled = true);
+            AckermannState(float v_left, float v_right, float streering, uint16_t mode, bool coubled = true);
 
-            void set(std::array<float, 2> v, float steering, bool coubled);
+            void set(std::array<float, 2> v, float steering, uint16_t mode, bool coubled);
             void set(const Twist &twist, const AckermannConfig &config, bool coubled);
             void set(const Twist &twist, const AckermannConfig &config);
             void couble(bool on);
             std::array<bool, 2> coubled;
             std::array<float, 2> v;
             float steering;
+            uint16_t mode;
         };
         typedef Value<AckermannState> AckermannStateStamped;
 

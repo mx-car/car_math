@@ -16,15 +16,15 @@ AckermannConfig::AckermannConfig(float wheel_diameter, float wheel_displacement,
     : wheel_diameter(wheel_diameter), wheel_displacement(wheel_displacement), wheel_axle_displacement(wheel_axle_displacement) {}
 
 AckermannState::AckermannState()
-    : coubled({0, 0}), v({0, 0}), steering(0) {}
+    : coubled({0, 0}), v({0, 0}), steering(0), mode(MODE_NA) {}
 AckermannState::AckermannState(const AckermannState &o)
-    : coubled(o.coubled), v(o.v), steering(o.steering) {}
-AckermannState::AckermannState(const std::array<float, 3> &v, bool coubled)
-    : coubled({coubled, coubled}), v({v[0], v[1]}), steering(v[2]) {}
-AckermannState::AckermannState(const std::array<float, 2> &v, float steering, bool coubled)
-    : coubled({coubled, coubled}), v(v), steering(steering) {}
-AckermannState::AckermannState(float v_left, float v_right, float steering, bool coubled)
-    : coubled({coubled, coubled}), v({v_left, v_right}), steering(steering) {}
+    : coubled(o.coubled), v(o.v), steering(o.steering), mode(o.mode) {}
+AckermannState::AckermannState(const std::array<float, 3> &v, uint16_t mode, bool coubled)
+    : coubled({coubled, coubled}), v({v[0], v[1]}), steering(v[2]), mode(mode) {}
+AckermannState::AckermannState(const std::array<float, 2> &v, float steering, uint16_t mode, bool coubled)
+    : coubled({coubled, coubled}), v(v), steering(steering), mode(mode) {}
+AckermannState::AckermannState(float v_left, float v_right, float steering, uint16_t mode, bool coubled)
+    : coubled({coubled, coubled}), v({v_left, v_right}), steering(steering), mode(mode) {}
 
 void AckermannState::set(const Twist &twist, const AckermannConfig &config, bool coubled)
 {
@@ -37,10 +37,10 @@ void AckermannState::couble(bool on)
     coubled[RIGHT] = on;
 }
 
-void AckermannState::set(std::array<float, 2> v, float steering, bool couble)
+void AckermannState::set(std::array<float, 2> v, float steering, uint16_t mode, bool couble)
 {
     this->couble(couble);
-    this->v[LEFT] = v[LEFT], this->v[RIGHT] = v[RIGHT], this->steering = steering;
+    this->v[LEFT] = v[LEFT], this->v[RIGHT] = v[RIGHT], this->steering = steering, this->mode = mode;
 }
 
 void AckermannState::set(const Twist &twist, const AckermannConfig &config)
@@ -58,6 +58,7 @@ void AckermannState::set(const Twist &twist, const AckermannConfig &config)
         v[RIGHT] = twist.w * (R + config.wheel_displacement / 2.);
         steering = atan2(config.wheel_axle_displacement, R);
     }
+    mode = MODE_VELOCITY;
 }
 Twist::Twist() : v(0), w(0) {}
 Twist::Twist(const Twist &o) : v(o.v), w(o.w) {}
